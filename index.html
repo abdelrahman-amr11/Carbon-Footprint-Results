@@ -17,7 +17,7 @@
         button { background-color: #4caf50; color: white; border: none; padding: 12px 30px; font-size: 16px; border-radius: 8px; cursor: pointer; transition: background-color 0.3s; margin-top: 15px; font-weight: bold; }
         button:hover { background-color: #388e3c; }
         #result-card { display: none; margin-top: 30px; padding: 20px; border: 2px dashed #4caf50; border-radius: 10px; background-color: #f1f8e9; }
-        .congrats { color: #2e7d32; font-size: 26px; font-weight: bold; margin-bottom: 10px; }
+        .congrats { font-size: 26px; font-weight: bold; margin-bottom: 10px; }
         .student-name { font-size: 22px; color: #333; margin-bottom: 20px; font-weight: bold; border-bottom: 2px solid #c8e6c9; padding-bottom: 10px; display: inline-block; }
         
         .grand-total-box { background: linear-gradient(135deg, #4caf50, #2e7d32); color: white; padding: 20px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 4px 10px rgba(46, 125, 50, 0.3); }
@@ -58,9 +58,10 @@
         <div class="congrats" id="congrats-text">ألف مبروك! 🎉</div>
         <div class="student-name" id="studentName"></div>
         
-        <div class="grand-total-box">
+        <div class="grand-total-box" id="grand-box">
             <div class="grand-total-title">المجموع الكلي للبرنامج</div>
             <div class="grand-total-val"><span id="grand-total"></span><span class="grand-total-max"> / 30</span></div>
+            <div style="margin-top: 8px; font-size: 16px; font-weight: bold;" id="percentage-val"></div>
         </div>
         
         <div class="stats-grid">
@@ -107,6 +108,9 @@
             document.getElementById('studentName').innerText = data.name;
             
             document.getElementById('grand-total').innerText = data.grand_total;
+            let percentage = Math.round((data.grand_total / 30) * 100);
+            document.getElementById('percentage-val').innerText = 'النسبة المئوية: ' + percentage + '%';
+            
             document.getElementById('l-score').innerText = data.l_score;
             document.getElementById('l-details').innerText = '(حضر ' + data.total_lectures + ' من 6 محاضرات)';
             document.getElementById('t-score').innerText = data.t_score;
@@ -114,13 +118,17 @@
             document.getElementById('total-score').innerText = data.exam_score;
             
             const congratsEl = document.getElementById('congrats-text');
-            // النجاح من 15 درجة (النص)
-            if (data.grand_total >= 15) { 
-                congratsEl.innerText = 'ألف مبروك! 🎉'; 
+            const grandBox = document.getElementById('grand-box');
+            
+            // النجاح من 21 درجة أي 70%
+            if (data.grand_total >= 21) { 
+                congratsEl.innerText = 'ألف مبروك! 🎉 (اجتياز)'; 
                 congratsEl.style.color = '#2e7d32'; 
+                grandBox.style.background = 'linear-gradient(135deg, #4caf50, #2e7d32)';
             } else { 
-                congratsEl.innerText = 'حظ أوفر المرة القادمة'; 
-                congratsEl.style.color = '#f57c00'; 
+                congratsEl.innerText = 'للأسف لم يتم اجتياز البرنامج'; 
+                congratsEl.style.color = '#d32f2f'; 
+                grandBox.style.background = 'linear-gradient(135deg, #ef5350, #c62828)';
             }
             
             resultCard.style.display = 'block';
